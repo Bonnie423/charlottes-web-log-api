@@ -47,6 +47,7 @@ router.patch('/:id', async (req, res) => {
     const { title, text } = req.body
     const newBlog = { title, text }
     const updatedBlog = await db.updatePostById(id, newBlog)
+   
     if (!updatedBlog) {
       res.status(404).json({ message: 'Post not updated' })
       return
@@ -108,6 +109,7 @@ router.post('/:id/comments', async (req, res) => {
       return
     }
     const newComment = await db.addComments(postId, comment)
+    console.log(newComment)
 
     res.status(201).json(newComment)
   } catch (err) {

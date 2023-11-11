@@ -10,11 +10,16 @@ export function getAllPosts():Promise<Post[]> {
 
 export function addPost(newPost:PostData):Promise<Post[]> {
   const date_created = new Date(Date.now())
-  return db('Posts').insert({...newPost, date_created}).returning('*')
+  const result = db('Posts').insert({...newPost, date_created}).returning(['date_created as dateCreated', 'text', 'title', 'id'])
+  // console.log(result)
+  return result
 }
 
 export function updatePostById(id:number, newPost:PostData){
-  return db('Posts').where('id', id).update(newPost)
+ const result = db('Posts').where('id', id).update(newPost).returning(['date_created as dateCreated', 'text', 'title', 'id'])
+//  console.log(result)
+  return result
+
 }
 
 export function getCommentsById(id :number){
@@ -30,14 +35,14 @@ export function addComments(postId:number, comment:string){
   const commentData = {
     post_id: postId,
     comment:comment,
-    date_posted : new Date(Date.now())
+    date_posted :  new Date().toLocaleString('en-CA')
   }
   // console.log(commentData)
-return db('Comments').insert({...commentData}).returning('*')
+return db('Comments').insert({...commentData}).returning(['date_posted as datePosted', 'comment', 'id' , 'post_id as postId'])
 }
 
 export function updateComment(commentId :number, comment :string){
-  return db('Comments').where('id', commentId).update(comment)
+  return db('Comments').where('id', commentId).update(comment).returning(['date_posted as datePosted', 'comment', 'id' , 'post_id as postId'])
 
 }
 
